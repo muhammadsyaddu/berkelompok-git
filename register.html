@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Pelatihan BLK</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap-icons/bootstrap-icons.css') }}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            background-color: #f8fafc;
+            line-height: 1.5;
+        }
+
+        /* ===== LEFT PANEL - DENGAN BACKGROUND GAMBAR GUNUNG IJEN YANG JELAS ===== */
+        .left-panel {
+            width: 45%;
+            position: relative;
+            color: white;
+            padding: 4rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* BACKGROUND GAMBAR UTAMA - DENGAN BRIGHTNESS & CONTRAST TINGGI */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset("assets/images/Gunung-Ijen.jpeg") }}');
+            background-size: cover;
+            background-position: center 30%;
+            background-repeat: no-repeat;
+            filter: brightness(1.05) contrast(1.15);
+            z-index: 0;
+        }
+
+        /* OVERLAY TIPIS - AGAR TEKS TETAP TERBACA TAPI GAMBAR TETAP JELAS */
+        .left-panel .overlay-dark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.40) 100%);
+            z-index: 1;
+        }
+
+        /* EFEK GARIS EMAS DI BAWAH */
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent);
+            z-index: 3;
+        }
+
+        /* EFEK BLUR BULAT DI SUDUT (TETAP DI PERTAHANKAN) */
+        .left-panel .blur-effect {
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .energy-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+            letter-spacing: -0.02em;
+        }
+
+        .energy-logo span {
+            color: #fbbf24;
+            font-size: 1.4rem;
+            font-weight: 500;
+            display: block;
+            margin-top: 0.5rem;
+            letter-spacing: normal;
+        }
+
+        .left-panel p {
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 450px;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 1.5rem 0 2rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-list {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-list li i {
+            color: #fbbf24;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
+            width: 55%;
+            background: #ffffff;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 520px;
+            margin: 1.5rem 0 3rem 0;
+        }
+
+        .register-header {
+            margin-bottom: 2.5rem;
+            text-align: left;
+        }
+
+        .register-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .register-header .subtitle {
+            font-size: 0.95rem;
+            color: #475569;
+            border-left: 3px solid #fbbf24;
+            padding-left: 1rem;
+            line-height: 1.6;
+            margin-top: 0.25rem;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 1rem;
+            pointer-events: none;
+            z-index: 1;
+            transition: color 0.2s ease;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        input:hover {
+            border-color: #cbd5e1;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+        }
+
+        input.is-invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        input.is-valid {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        /* Password field dengan toggle */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            padding-right: 3rem;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: none;
+            padding: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+        }
+
+        .toggle-password:hover {
+            color: #fbbf24;
+            background-color: #f1f5f9;
+        }
+
+        /* Password Strength Meter */
+        .password-strength-container {
+            margin-top: 1rem;
+            padding: 1.2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .strength-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .strength-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .strength-value {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .strength-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .strength-strong {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .strength-indicator {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 0.8rem;
+        }
+
+        .strength-light {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-light.weak {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+
+        .strength-light.medium {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .strength-light.strong {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .strength-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .strength-length {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            background: #ffffff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Error message */
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .error-message i {
+            font-size: 0.7rem;
+        }
+
+        /* Checkbox styling */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 2rem 0 1.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: #1a4731;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 0.85rem;
+            color: #475569;
+            text-transform: none;
+            font-weight: 400;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        .checkbox-wrapper a {
+            color: #1a4731;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted transparent;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-wrapper a:hover {
+            color: #fbbf24;
+            border-bottom-color: #fbbf24;
+        }
+
+        /* Button Register */
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a4731 0%, #0a3622 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 40, 20, 0.1);
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(26, 71, 49, 0.25);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .btn-register::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-register:hover::after {
+            left: 100%;
+        }
+
+        /* Login link */
+        .login-link {
+            text-align: center;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: #1a4731;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .login-link a:hover {
+            color: #fbbf24;
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            color: #166534;
+        }
+
+        .alert i {
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            body {
+                flex-direction: column;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100%;
+            }
+
+            .left-panel {
+                padding: 2.5rem;
+            }
+
+            .right-panel {
+                padding: 2rem;
+            }
+
+            .register-container {
+                margin: 1rem 0 2rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LEFT PANEL - Informasi Perusahaan dengan Background Gambar Gunung Ijen -->
+    <div class="left-panel">
+        <!-- Overlay tipis agar gambar tetap jelas -->
+        <div class="overlay-dark"></div>
+        <!-- Efek blur bulat (dipertahankan) -->
+        <div class="blur-effect"></div>
+
+        <div class="energy-logo">
+            BLK
+            <span>SMK INFORMATIKA Utama</span>
+        </div>
+
+        <p>
+            Pelatihan BLK
+        </p>
+
+    </div>
+
+    <!-- RIGHT PANEL - Form Registrasi -->
+    <div class="right-panel">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Daftar Akun</h2>
+                <div class="subtitle">Isi data dengan benar untuk memulai kerja sama</div>
+            </div>
+
+            <!-- Alert Messages -->
+            @if(session('error'))
+                <div class="alert alert-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            <!-- Form Registrasi -->
+            <form method="POST" action="{{ route('register') }}" id="registerForm">
+                @csrf
+
+                <!-- Nama Lengkap -->
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" id="name" name="name" value="{{ old('name') }}"
+                            placeholder="Masukkan nama lengkap" class="@error('name') is-invalid @enderror" required>
+                    </div>
+                    @error('name')
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}"
+                            placeholder="nama@perusahaan.com" class="@error('email') is-invalid @enderror" required>
+                    </div>
+                    @error('email')
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- No. Telepon (1 Kolom) -->
+                <div class="form-group">
+                    <label for="phone">No. Telepon</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-telephone input-icon"></i>
+                        <input type="text" id="phone" name="phone" value="{{ old('phone') }}" placeholder="081234567890"
+                            class="@error('phone') is-invalid @enderror">
+                    </div>
+                    @error('phone')
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Nama Perusahaan (1 Kolom) - TURUN KE BAWAH -->
+                <div class="form-group">
+                    <label for="company">Nama Perusahaan</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-building input-icon"></i>
+                        <input type="text" id="company" name="company" value="{{ old('company') }}"
+                            placeholder="PT. Contoh Perusahaan" class="@error('company') is-invalid @enderror">
+                    </div>
+                    @error('company')
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" name="password" id="password" placeholder="Minimal 8 karakter"
+                            class="@error('password') is-invalid @enderror" oninput="checkPasswordStrength(this.value)"
+                            required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)"
+                            tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <!-- Password Strength Meter -->
+                    <div class="password-strength-container" id="passwordStrengthContainer" style="display: none;">
+                        <div class="strength-header">
+                            <span class="strength-title">Kekuatan Password</span>
+                            <span class="strength-value" id="strengthValue">Evaluasi...</span>
+                        </div>
+
+                        <div class="strength-indicator">
+                            <div class="strength-light" id="light1"></div>
+                            <div class="strength-light" id="light2"></div>
+                            <div class="strength-light" id="light3"></div>
+                        </div>
+
+                        <div class="strength-details">
+                            <span class="strength-text" id="strengthText">Ketik password untuk evaluasi</span>
+                            <span class="strength-length" id="passwordLength">0 karakter</span>
+                        </div>
+                    </div>
+
+                    @error('password')
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Konfirmasi Password -->
+                <div class="form-group">
+                    <label for="password-confirm">Konfirmasi Password</label>
+                    <div class="password-wrapper">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" name="password_confirmation" id="password-confirm"
+                            placeholder="Ketik ulang password" oninput="checkPasswordMatch(this.value)" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password-confirm', this)"
+                            tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="passwordMatchError" style="display: none;">
+                        <i class="bi bi-exclamation-circle"></i>
+                        Password tidak cocok
+                    </div>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" name="terms" id="terms" value="1" {{ old('terms') ? 'checked' : '' }}
+                        required>
+                    <label for="terms">
+                        Saya menyetujui <a href="{{ url('/terms') }}" target="_blank">Syarat & Ketentuan</a>
+                        dan <a href="{{ url('/privacy') }}" target="_blank">Kebijakan Privasi</a> yang berlaku
+                    </label>
+                </div>
+                @error('terms')
+                    <div class="error-message" style="margin-top: -0.5rem; margin-bottom: 1rem;">
+                        <i class="bi bi-exclamation-circle"></i>
+                        {{ $message }}
+                    </div>
+                @enderror
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-register">
+                    Daftar Sekarang
+                </button>
+
+                <!-- Link ke Login -->
+                <div class="login-link">
+                    Sudah memiliki akun?
+                    <a href="{{ route('login') }}">
+                        Masuk Sekarang Juga!
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Toggle Password Visibility
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // Password Strength Checker
+        function checkPasswordStrength(password) {
+            const container = document.getElementById('passwordStrengthContainer');
+            const strengthValue = document.getElementById('strengthValue');
+            const strengthText = document.getElementById('strengthText');
+            const passwordLength = document.getElementById('passwordLength');
+            const light1 = document.getElementById('light1');
+            const light2 = document.getElementById('light2');
+            const light3 = document.getElementById('light3');
+
+            // Reset semua lampu
+            light1.className = 'strength-light';
+            light2.className = 'strength-light';
+            light3.className = 'strength-light';
+
+            if (password.length > 0) {
+                container.style.display = 'block';
+                passwordLength.textContent = password.length + ' karakter';
+
+                // Evaluasi kekuatan
+                if (password.length < 8) {
+                    // Lemah
+                    strengthValue.textContent = 'Lemah';
+                    strengthValue.className = 'strength-value strength-weak';
+                    strengthText.textContent = 'Password terlalu pendek';
+
+                    light1.className = 'strength-light weak';
+                    light2.className = 'strength-light';
+                    light3.className = 'strength-light';
+
+                } else if (password.length >= 8 && password.length <= 11) {
+                    // Sedang
+                    strengthValue.textContent = 'Sedang';
+                    strengthValue.className = 'strength-value strength-medium';
+                    strengthText.textContent = 'Kombinasikan huruf besar & angka';
+
+                    light1.className = 'strength-light medium';
+                    light2.className = 'strength-light medium';
+                    light3.className = 'strength-light';
+
+                } else {
+                    // Kuat
+                    strengthValue.textContent = 'Kuat';
+                    strengthValue.className = 'strength-value strength-strong';
+                    strengthText.textContent = 'Password sangat baik';
+
+                    light1.className = 'strength-light strong';
+                    light2.className = 'strength-light strong';
+                    light3.className = 'strength-light strong';
+                }
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // Password Match Checker
+        function checkPasswordMatch(confirmPassword) {
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('passwordMatchError');
+            const confirmInput = document.getElementById('password-confirm');
+
+            if (confirmPassword && password !== confirmPassword) {
+                errorDiv.style.display = 'flex';
+                confirmInput.classList.add('is-invalid');
+            } else {
+                errorDiv.style.display = 'none';
+                confirmInput.classList.remove('is-invalid');
+            }
+        }
+
+        // Form Validation
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password-confirm').value;
+            const terms = document.getElementById('terms').checked;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Password dan konfirmasi password tidak cocok!');
+                return false;
+            }
+
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password minimal 8 karakter!');
+                return false;
+            }
+
+            if (!terms) {
+                e.preventDefault();
+                alert('Anda harus menyetujui Syarat dan Ketentuan');
+                return false;
+            }
+        });
+
+        // Set focus ke field pertama
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('name').focus();
+        });
+    </script>
+
+</body>
+
+</html>
